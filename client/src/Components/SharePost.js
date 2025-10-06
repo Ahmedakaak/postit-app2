@@ -11,7 +11,7 @@ const SharePosts = () => {
   return (
     <Container>
       <Row>
-        <Col>
+        <Col className="mt-2">
           <Input
             id="share"
             name="share"

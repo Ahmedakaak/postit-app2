@@ -2,7 +2,7 @@ import { userSchemaValidation } from "../Validations/UserValidations";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-
+import { useSelector } from "react-redux";
 import {
   Button,
   Col,
@@ -15,6 +15,7 @@ import {
 } from "reactstrap";
 
 const Register = () => {
+  const userList = useSelector((state) => state.users.value);
   const {
     register,
     handleSubmit,
@@ -71,6 +72,24 @@ const Register = () => {
           </Col>
         </Row>
       </Form>
+      <Row>
+        <Col md={6}>
+          List of Users
+          <table>
+            <tbody>
+              {userList.map((user) => (
+                <tr key={user.email}>
+                  <td>{user.name}</td>
+
+                  <td>{user.email}</td>
+
+                  <td>{user.password}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Col>
+      </Row>
     </Container>
   );
 };
