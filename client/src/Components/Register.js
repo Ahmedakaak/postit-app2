@@ -12,16 +12,17 @@ import {
   FormGroup,
   Input,
   Form,
+  button,
 } from "reactstrap";
 
 const Register = () => {
-  const userList = useSelector((state) => state.users.value);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(userSchemaValidation) });
 
+  const userlist = useSelector((state) => state.users.values);
   const onSubmit = (data) => {
     console.log("Form Data", data);
     alert("Validation all good."); // You can handle the form submission here
@@ -74,16 +75,30 @@ const Register = () => {
       </Form>
       <Row>
         <Col md={6}>
-          List of Users
-          <table>
+          <h2>List of users</h2>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Name</th>
+                <th>password</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
             <tbody>
-              {userList.map((user) => (
-                <tr key={user.email}>
-                  <td>{user.name}</td>
-
+              {userlist.map((user) => (
+                <tr key={user.id}>
                   <td>{user.email}</td>
-
+                  <td>{user.name}</td>
                   <td>{user.password}</td>
+                  <td>
+                    <Button color="warning" size="sm">
+                      Update
+                    </Button>{" "}
+                    <Button color="danger" size="sm">
+                      Delete
+                    </Button>
+                  </td>
                 </tr>
               ))}
             </tbody>
