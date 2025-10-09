@@ -2,7 +2,9 @@ import { userSchemaValidation } from "../Validations/UserValidations";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useState } from "react";
+import { addUser, deleteUser } from "../Features/UserSlice";
 import {
   Button,
   Col,
@@ -23,9 +25,32 @@ const Register = () => {
   } = useForm({ resolver: yupResolver(userSchemaValidation) });
 
   const userlist = useSelector((state) => state.users.values);
+  const dispatch = useDispatch();
+
+  const [name, setName] = useState("");
+  const [email, setemail] = useState("");
+  const [password, setpassword] = useState("");
+  const [confirmPassword, setconfirmPassword] = useState("");
   const onSubmit = (data) => {
-    console.log("Form Data", data);
-    alert("Validation all good."); // You can handle the form submission here
+    try {
+      const UserData = {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      };
+      dispatch(addUser(UserData)); //use the useDispatch hook to dispatch an action, passing as parameter the userData
+      console.log("Form Data", data);
+      alert("Validation all good."); // You can handle the form submission here
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleDelete = (email) => {
+    try {
+      dispatch(deleteUser(email));
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <Container>
@@ -34,14 +59,29 @@ const Register = () => {
         <Row>
           <Col md={6}>
             Name<br></br>
-            <input type="text" name="name" {...register("name")}></input>
+            <input
+              type="text"
+              name="name"
+              {...register("name", {
+                value: name,
+                onChange: (e) => setName(e.target.value),
+              })}
+            ></input>
+            {name}
           </Col>
           <p className="error">{errors.name?.message}</p>
         </Row>
         <Row>
           <Col md={6}>
             Email<br></br>
-            <input type="email" name="email" {...register("email")}></input>
+            <input
+              type="email"
+              name="email"
+              {...register("email", {
+                value: email,
+                onChange: (e) => setemail(e.target.value),
+              })}
+            ></input>
           </Col>
           <p className="error">{errors.email?.message}</p>
         </Row>
@@ -51,7 +91,10 @@ const Register = () => {
             <input
               type="password"
               name="password"
-              {...register("password")}
+              {...register("password", {
+                value: password,
+                onChange: (e) => setpassword(e.target.value),
+              })}
             ></input>
           </Col>
           <p className="error">{errors.password?.message}</p>
@@ -62,7 +105,10 @@ const Register = () => {
             <input
               type="password"
               name="confirmpassword"
-              {...register("confirmPassword")}
+              {...register("confirmPassword", {
+                value: confirmPassword,
+                onChange: (e) => setconfirmPassword(e.target.value),
+              })}
             ></input>
           </Col>
           <p className="error">{errors.confirmPassword?.message}</p>
@@ -95,7 +141,11 @@ const Register = () => {
                     <Button color="warning" size="sm">
                       Update
                     </Button>{" "}
-                    <Button color="danger" size="sm">
+                    <Button
+                      color="danger"
+                      size="sm"
+                      onClick={() => handleDelete(user.email)}
+                    >
                       Delete
                     </Button>
                   </td>
