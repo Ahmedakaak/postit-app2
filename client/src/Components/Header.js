@@ -17,7 +17,7 @@ const Header = () => {
             <Link to="/profile">profile</Link>
           </NavItem>
           <NavItem>
-            <Link to="/Login">register</Link>
+            <Link to="/register">register</Link>
           </NavItem>
         </Nav>
       </Navbar>

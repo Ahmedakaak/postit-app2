@@ -15,7 +15,18 @@ export const userSlice = createSlice({
         (user) => user.email !== action.payload
       );
     },
+    udpateUser: (state, action) => {
+      state.values.map((user) => {
+        //iterate the  array and compare the email with the email from the payload
+
+        if (user.email === action.payload.email) {
+          user.name = action.payload.name;
+
+          user.password = action.payload.password;
+        }
+      });
+    },
   },
 });
-export const { addUser, deleteUser } = userSlice.actions;
+export const { addUser, deleteUser, udpateUser } = userSlice.actions;
 export default userSlice.reducer;

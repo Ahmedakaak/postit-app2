@@ -3,9 +3,9 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
 import { useState } from "react";
-import { addUser, deleteUser } from "../Features/UserSlice";
+import { useParams } from "react-router-dom";
+import { addUser, deleteUser, udpateUser } from "../Features/UserSlice";
 import {
   Button,
   Col,
@@ -18,7 +18,7 @@ import {
   button,
 } from "reactstrap";
 
-const Register = () => {
+const UpdateUser = () => {
   const {
     register,
     handleSubmit,
@@ -28,10 +28,11 @@ const Register = () => {
   const userlist = useSelector((state) => state.users.values);
   const dispatch = useDispatch();
 
-  const [name, setName] = useState("");
-  const [email, setemail] = useState("");
-  const [password, setpassword] = useState("");
-  const [confirmPassword, setconfirmPassword] = useState("");
+  const { user_email, user_name, user_password } = useParams();
+  const [name, setName] = useState(user_name);
+  const [email, setemail] = useState(user_email);
+  const [password, setpassword] = useState(user_password);
+  const [confirmPassword, setconfirmPassword] = useState(user_password);
   const onSubmit = (data) => {
     try {
       const UserData = {
@@ -46,23 +47,28 @@ const Register = () => {
       console.log(error);
     }
   };
-  const handleDelete = (email) => {
-    try {
-      dispatch(deleteUser(email));
-    } catch (error) {
-      console.log(error);
-    }
+  const handleUpdate = () => {
+    const userData = {
+      name: name, //create an object with the values from the state variables
+
+      email: email,
+
+      password: password,
+    };
+
+    dispatch(udpateUser(userData)); //use the useDispatch hook to dispatch an action, passing as parameter the userData
   };
   return (
     <Container>
-      <h1>Register</h1>
-      <Form className="div-form" onSubmit={handleSubmit(onSubmit)}>
+      <h1>UpdateUser</h1>
+      <Form className="div-form" onSubmit={handleSubmit(handleUpdate)}>
         <Row>
           <Col md={6}>
             Name<br></br>
             <input
               type="text"
               name="name"
+              value={name}
               {...register("name", {
                 value: name,
                 onChange: (e) => setName(e.target.value),
@@ -78,6 +84,7 @@ const Register = () => {
             <input
               type="email"
               name="email"
+              value={email}
               {...register("email", {
                 value: email,
                 onChange: (e) => setemail(e.target.value),
@@ -92,6 +99,7 @@ const Register = () => {
             <input
               type="password"
               name="password"
+              value={password}
               {...register("password", {
                 value: password,
                 onChange: (e) => setpassword(e.target.value),
@@ -106,6 +114,7 @@ const Register = () => {
             <input
               type="password"
               name="confirmpassword"
+              value={confirmPassword}
               {...register("confirmPassword", {
                 value: confirmPassword,
                 onChange: (e) => setconfirmPassword(e.target.value),
@@ -116,50 +125,12 @@ const Register = () => {
         </Row>
         <Row>
           <Col md={6}>
-            <Button>Register</Button>
+            <Button>UpdateUser</Button>
           </Col>
         </Row>
       </Form>
-      <Row>
-        <Col md={6}>
-          <h2>List of users</h2>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th>Name</th>
-                <th>password</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {userlist.map((user) => (
-                <tr key={user.id}>
-                  <td>{user.email}</td>
-                  <td>{user.name}</td>
-                  <td>{user.password}</td>
-                  <td>
-                    <Link
-                      to={`/update/${user.email}/${user.name}/${user.password}`}
-                    >
-                      <Button color="primary">Update User</Button>
-                    </Link>
-                    <Button
-                      color="danger"
-                      size="sm"
-                      onClick={() => handleDelete(user.email)}
-                    >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Col>
-      </Row>
     </Container>
   );
 };
 
-export default Register;
+export default UpdateUser;

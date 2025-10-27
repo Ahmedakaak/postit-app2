@@ -10,7 +10,8 @@ root.render(
     {" "}
     {/* put a <Provider> around your <App>, and pass the store as a prop:*/}
     <React.StrictMode>
-      <Register />
+      {/* <Register /> */}
+      <App />
     </React.StrictMode>
   </Provider>
 );
