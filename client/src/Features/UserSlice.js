@@ -1,7 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { UsersData } from "../Exampledata";
 const initialState = { values: UsersData };
-
+export const addUsers = createAsyncThunk();
 export const userSlice = createSlice({
   name: "users",
   initialState,
