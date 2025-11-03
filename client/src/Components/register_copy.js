@@ -6,8 +6,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { addUser, deleteUser } from "../Features/UserSlice";
-import { registerUser } from "../Features/UserSlice";
-import { useNavigate } from "react-router-dom";
 import {
   Button,
   Col,
@@ -29,7 +27,7 @@ const Register = () => {
 
   const userlist = useSelector((state) => state.users.values);
   const dispatch = useDispatch();
-  const navigate = useNavigate(); //declares a constant variable named navigate and assigns it the value returned by the useNavigate() hook.
+
   const [name, setName] = useState("");
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
@@ -41,10 +39,9 @@ const Register = () => {
         email: data.email,
         password: data.password,
       };
-      dispatch(registerUser(UserData)); //use the useDispatch hook to dispatch an action, passing as parameter the userData
-      navigate("/login"); //redirect to login component
+      dispatch(addUser(UserData)); //use the useDispatch hook to dispatch an action, passing as parameter the userData
       console.log("Form Data", data);
-      alert("add succesfully"); // You can handle the form submission here
+      alert("Validation all good."); // You can handle the form submission here
     } catch (error) {
       console.log(error);
     }
@@ -123,6 +120,44 @@ const Register = () => {
           </Col>
         </Row>
       </Form>
+      <Row>
+        <Col md={6}>
+          <h2>List of users</h2>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Name</th>
+                <th>password</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {userlist.map((user) => (
+                <tr key={user.id}>
+                  <td>{user.email}</td>
+                  <td>{user.name}</td>
+                  <td>{user.password}</td>
+                  <td>
+                    <Link
+                      to={`/update/${user.email}/${user.name}/${user.password}`}
+                    >
+                      <Button color="primary">Update User</Button>
+                    </Link>
+                    <Button
+                      color="danger"
+                      size="sm"
+                      onClick={() => handleDelete(user.email)}
+                    >
+                      Delete
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Col>
+      </Row>
     </Container>
   );
 };

@@ -10,8 +10,41 @@ import {
   Form,
 } from "reactstrap";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { login } from "../Features/UserSlice";
 import "../App.css";
 const Login = () => {
+  const [email, setemail] = useState();
+  const [password, setpassword] = useState();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  //Retrieve the current value of the state from the store, name of state is users with a property user
+
+  const user = useSelector((state) => state.users.user);
+
+  const isSuccess = useSelector((state) => state.users.isSuccess);
+  const isError = useSelector((state) => state.users.isError);
+  const handleLogin = () => {
+    const userData = {
+      email,
+      password,
+    };
+    dispatch(login(userData));
+  };
+  useEffect(() => {
+    if (isError) {
+      navigate("/login");
+    }
+
+    if (isSuccess) {
+      navigate("/");
+    } else {
+      navigate("/login");
+    }
+  }, [user, isError, isSuccess]);
   return (
     <div>
       <Container>
@@ -25,6 +58,7 @@ const Login = () => {
                   name="email"
                   placeholder="with a placeholder"
                   type="email"
+                  onChange={(e) => setemail(e.target.value)}
                 />
               </FormGroup>
             </Col>
@@ -39,6 +73,7 @@ const Login = () => {
                   name="password"
                   placeholder="password placeholder"
                   type="password"
+                  onChange={(e) => setpassword(e.target.value)}
                 />
               </FormGroup>
             </Col>
@@ -46,7 +81,7 @@ const Login = () => {
 
           <Row>
             <Col md={3}>
-              <Button>Login</Button>
+              <Button onClick={() => handleLogin()}>Login</Button>
             </Col>
           </Row>
 
