@@ -91,62 +91,44 @@ export const userSlice = createSlice({
     //Asynchronous actions that update the state directly,
 
     builder
-
+      //register
       .addCase(registerUser.pending, (state) => {
         state.isLoading = true;
       })
 
       .addCase(registerUser.fulfilled, (state, action) => {
-        state.isLoading = true;
+        state.isLoading = false;
       })
 
       .addCase(registerUser.rejected, (state) => {
         state.isLoading = false;
-      });
-  },
-  extraReducers: (builder) => {
-    //Asynchronous actions that update the state directly,
+      })
 
-    builder
-
+      // Login
       .addCase(login.pending, (state) => {
         state.isLoading = true;
       })
-
       .addCase(login.fulfilled, (state, action) => {
-        state.user = action.payload; //assign the payload which is the user object return from the server after authentication
-
+        state.user = action.payload;
         state.isLoading = false;
-
         state.isSuccess = true;
       })
-
       .addCase(login.rejected, (state) => {
         state.isLoading = false;
-
         state.isError = true;
-      });
-  },
-  extraReducers: (builder) => {
-    //Asynchronous actions that update the state directly,
+      })
 
-    builder
-
-      .addCase(login.pending, (state) => {
+      // Logout
+      .addCase(logout.pending, (state) => {
         state.isLoading = true;
       })
-
-      .addCase(login.fulfilled, (state, action) => {
-        state.user = {}; //assign the payload which is the user object return from the server after authentication
-
+      .addCase(logout.fulfilled, (state) => {
+        state.user = {};
         state.isLoading = false;
-
         state.isSuccess = false;
       })
-
-      .addCase(login.rejected, (state) => {
+      .addCase(logout.rejected, (state) => {
         state.isLoading = false;
-
         state.isError = true;
       });
   },

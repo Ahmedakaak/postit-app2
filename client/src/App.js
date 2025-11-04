@@ -6,11 +6,13 @@ import Login from "./Components/Login";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Row, Col } from "reactstrap";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Profile from "./Components/Profile";
 import Register from "./Components/Register";
 import UpdateUser from "./Components/UpdateUser";
 
 const App = () => {
+  const email = useSelector((state) => state.users.user.email);
   return (
     <>
       {/* <Login /> */}
