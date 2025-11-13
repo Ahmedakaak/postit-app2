@@ -25,11 +25,7 @@ mongoose.connect(connectString, {
 //post api for register user
 app.post("/registerUser", async (req, res) => {
   try {
-    const name = req.body.name;
-
-    const email = req.body.email;
-
-    const password = req.body.password;
+    const { name, email, password } = req.body;
 
     const hashedpassword = await bcrypt.hash(password, 10);
 
@@ -90,9 +86,7 @@ app.post("/logout", async (req, res) => {
 
 app.post("/savePost", async (req, res) => {
   try {
-    const postMsg = req.body.postMsg;
-
-    const email = req.body.email;
+    const { postMsg, email } = req.body;
 
     const post = new PostModel({
       postMsg: postMsg,
@@ -119,6 +113,68 @@ app.get("/getPosts", async (req, res) => {
     const countPost = await PostModel.countDocuments({});
 
     res.send({ posts: posts, count: countPost });
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+
+app.put("/likepost/:postID/", async (req, res) => {
+  const postID = req.params.postID;
+  const userId = req.body.userID;
+  try {
+    //search the postID if it exists
+
+    const postToUpdate = await PostModel.findOne({ _id: postID });
+
+    if (!postToUpdate) {
+      return res.status(404).json({ msg: "Post not found." });
+    }
+
+    //Search the user Id from the array of users who liked the post.
+
+    const userIndex = postToUpdate.likes.users.indexOf(userId);
+
+    //indexOf method returns the index of the first occurrence of a specified value in an array.
+
+    //If the value is not found, it returns -1.
+
+    //This code will toogle from like to unlike
+
+    if (userIndex !== -1) {
+      // User has already liked the post, so unlike it
+
+      const udpatedPost = await PostModel.findOneAndUpdate(
+        { _id: postID },
+
+        {
+          $inc: { "likes.count": -1 }, // Decrement the like count $inc and $pull are update operators
+
+          $pull: { "likes.users": userId }, // Remove userId from the users array
+        },
+
+        { new: true } // Return the modified document
+      );
+
+      res.json({ post: udpatedPost, msg: "Post unliked." });
+    } else {
+      // User hasn't liked the post, so like it
+
+      const updatedPost = await PostModel.findOneAndUpdate(
+        { _id: postID },
+
+        {
+          $inc: { "likes.count": 1 }, // Increment the like count
+
+          $addToSet: { "likes.users": userId }, // Add userId to the users array if not already present
+        },
+
+        { new: true } // Return the modified document
+      );
+
+      res.json({ post: updatedPost, msg: "Post liked." });
+    }
   } catch (err) {
     console.error(err);
 
