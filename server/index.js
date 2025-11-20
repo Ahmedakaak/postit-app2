@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import cors from "cors";
 import express from "express";
-import UserModel from "./Models/UserModel.js";
-import PostModel from "./Models/PostModel.js";
+import UserModel from "./models/UserModel.js";
+import PostModel from "./models/PostModel.js";
 import bcrypt from "bcrypt";
 import * as ENV from "./config.js";
 
